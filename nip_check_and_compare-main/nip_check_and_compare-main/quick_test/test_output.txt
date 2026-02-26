@@ -1,0 +1,15 @@
+PANDUAN RENAME FILE - FOLDER QUICK_TEST
+========================================
+
+FILE YANG PERLU DIHAPUS (kosong):
+
+FILE YANG PERLU DI-RENAME:
+- 2-nip_data_checker.py    →  simpeg_siasn_comparator.py   (Script perbandingan SIMPEG vs SIASN)
+- 2-nip_data_checker.csv   →  contoh_simpeg.csv            (Data contoh SIMPEG)
+- 4-nip_data_checker.py    →  [HAPUS - ini script rename yang tidak sengaja tersimpan]
+- 4-nip_data_checker.csv   →  contoh_siasn.csv             (Data contoh SIASN)
+
+HASIL AKHIR:
+- simpeg_siasn_comparator.py
+- contoh_simpeg.csv
+- contoh_siasn.csv
