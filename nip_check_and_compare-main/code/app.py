@@ -303,6 +303,55 @@ def extract_satker_simpeg(unor, unor_induk):
     return unor_induk_str
 
 
+def normalize_satker_simpeg(satker):
+    """
+    Normalisasi satker SIMPEG yang memiliki format gabungan, misal:
+    "SEKRETARIAT KPU KABUPATEN DONGGALA - SEKRETARIAT KPU PROVINSI SULAWESI TENGAH"
+
+    Aturan prioritas (dari terkecil ke terbesar):
+    1. Jika salah satu bagian mengandung KABUPATEN → ambil bagian yang mengandung KABUPATEN
+    2. Jika salah satu bagian mengandung KOTA → ambil bagian yang mengandung KOTA
+    3. Jika salah satu bagian mengandung PROVINSI dan bagian lain mengandung
+       SEKRETARIAT JENDERAL / SETJEN / KOMISI PEMILIHAN UMUM (pusat) → ambil bagian PROVINSI
+    4. Jika tidak ada pemisah " - ", kembalikan apa adanya
+    """
+    if not satker:
+        return satker
+
+    satker_str = str(satker).strip()
+
+    # Cek apakah ada pemisah " - "
+    if ' - ' not in satker_str:
+        return satker_str
+
+    parts = [p.strip() for p in satker_str.split(' - ')]
+    parts_upper = [p.upper() for p in parts]
+
+    # Aturan 1: Prioritas KABUPATEN
+    kab_parts = [parts[i] for i, p in enumerate(parts_upper) if 'KABUPATEN' in p]
+    if kab_parts:
+        return kab_parts[0]
+
+    # Aturan 2: Prioritas KOTA
+    kota_parts = [parts[i] for i, p in enumerate(parts_upper) if 'KOTA' in p]
+    if kota_parts:
+        return kota_parts[0]
+
+    # Aturan 3: Prioritas PROVINSI (jika ada SETJEN/PUSAT di bagian lain)
+    PUSAT_KEYWORDS = ['SEKRETARIAT JENDERAL', 'SETJEN', 'JENDERAL KOMISI']
+    provinsi_parts = [parts[i] for i, p in enumerate(parts_upper) if 'PROVINSI' in p]
+    if provinsi_parts:
+        has_pusat = any(
+            any(kw in p for kw in PUSAT_KEYWORDS)
+            for p in parts_upper
+        )
+        if has_pusat:
+            return provinsi_parts[0]
+
+    # Default: kembalikan bagian pertama (yang biasanya lebih spesifik)
+    return parts[0]
+
+
 def normalize_satker(satker):
     """
     Normalisasi nama satker untuk perbandingan:
@@ -501,11 +550,13 @@ def extract_fields(row, source):
         unor = row.get(col_map['unor'], '')
         unor_induk = row.get(col_map['unor_induk'], '')
         satker = extract_satker_simpeg(unor, unor_induk)
+        satker_normalized = normalize_satker_simpeg(satker)
         # Get jenis pegawai from SIMPEG
         jenis_pegawai = str(row.get(col_map['jenis_pegawai'], '')).strip()
     else:  # siasn
         unor_nama = row.get(col_map['unor_nama'], '')
         satker = extract_satker_siasn(unor_nama)
+        satker_normalized = satker  # SIASN satker already extracted cleanly
         jenis_pegawai = ''  # SIASN doesn't have this column, will be filled from SIMPEG
     
     return {
@@ -516,6 +567,7 @@ def extract_fields(row, source):
         'golru': str(row.get(col_map['golru'], '')).strip(),
         'nama_jabatan': str(row.get(col_map['nama_jabatan'], '')).strip(),
         'satker': satker,
+        'satker_normalized': satker_normalized,
         'jenis_pegawai': jenis_pegawai
     }
 
@@ -583,20 +635,22 @@ def compare_datasets(simpeg_data, siasn_data):
         diff_cols = []
         
         for field in COMPARE_FIELDS:
-            simpeg_val = simpeg_row[field] if simpeg_row[field] else ''
             siasn_val = siasn_row[field] if siasn_row[field] else ''
             
             # Use intelligent matching for nama_jabatan
             if field == 'nama_jabatan':
+                simpeg_val = simpeg_row[field] if simpeg_row[field] else ''
                 if not job_titles_are_equal(simpeg_val, siasn_val):
                     diff_cols.append(field)
                     field_counts[field] += 1
-            # Use intelligent matching for satker (handles KPU/KIP normalization)
+            # Use intelligent matching for satker: compare normalized SIMPEG satker with SIASN satker
             elif field == 'satker':
+                simpeg_val = simpeg_row.get('satker_normalized', simpeg_row.get('satker', ''))
                 if not satker_are_equal(simpeg_val, siasn_val):
                     diff_cols.append(field)
                     field_counts[field] += 1
             else:
+                simpeg_val = simpeg_row[field] if simpeg_row[field] else ''
                 # Standard comparison (case-insensitive)
                 if simpeg_val.lower() != siasn_val.lower():
                     diff_cols.append(field)

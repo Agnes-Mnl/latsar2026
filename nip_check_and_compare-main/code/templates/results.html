@@ -217,6 +217,8 @@
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase w-1/6">NIP</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase w-1/5">Nama</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Satuan Kerja
+                                SIMPEG</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase w-1/12">Jenis
                             </th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Kolom Tidak
@@ -232,6 +234,10 @@
                             data-cols="{{ item.diff_cols | join(',') }}" data-jenis="{{ item.simpeg.jenis_pegawai }}">
                             <td class="px-6 py-4 text-sm font-mono">{{ item.nip }}</td>
                             <td class="px-6 py-4 text-sm text-gray-600">{{ item.nama }}</td>
+                            <td
+                                class="px-6 py-4 text-sm text-gray-600 {% if 'satker' in item.diff_cols %}bg-orange-50{% endif %}">
+                                {{ item.simpeg.satker_normalized or item.simpeg.satker or '-' }}
+                            </td>
                             <td class="px-6 py-4 text-sm">
                                 <span class="px-2 py-0.5 rounded text-xs font-medium 
                                     {% if item.simpeg.jenis_pegawai == 'CPNS' %}bg-blue-100 text-blue-800
@@ -258,7 +264,7 @@
                         {% endfor %}
                         {% else %}
                         <tr>
-                            <td colspan="5" class="px-6 py-8 text-center text-gray-500">
+                            <td colspan="6" class="px-6 py-8 text-center text-gray-500">
                                 <p class="text-lg font-medium text-blue-600">✓ Semua data konsisten!</p>
                             </td>
                         </tr>
