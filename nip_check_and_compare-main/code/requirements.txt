@@ -1,8 +1,0 @@
-pandas
-openpyxl
-xlrd
-lxml
-html5lib
-flask
-beautifulsoup4
-python-calamine

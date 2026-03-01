@@ -1,0 +1,49 @@
+{
+  "columns": [
+    "SATKER",
+    "Struktur Pembagian Satker"
+  ],
+  "sample": [
+    {
+      "SATKER": "BIRO HUKUM",
+      "Struktur Pembagian Satker": "SEKRETARIAT JENDERAL KPU"
+    },
+    {
+      "SATKER": "BIRO KEUANGAN",
+      "Struktur Pembagian Satker": "SEKRETARIAT JENDERAL KPU"
+    },
+    {
+      "SATKER": "BIRO LOGISTIK",
+      "Struktur Pembagian Satker": "SEKRETARIAT JENDERAL KPU"
+    },
+    {
+      "SATKER": "BIRO PARTISIPASI DAN HUBUNGAN MASYARAKAT",
+      "Struktur Pembagian Satker": "SEKRETARIAT JENDERAL KPU"
+    },
+    {
+      "SATKER": "BIRO PENGADAAN BARANG /JASA DAN BARANG MILIK NEGARA",
+      "Struktur Pembagian Satker": "SEKRETARIAT JENDERAL KPU"
+    },
+    {
+      "SATKER": "BIRO PERENCANAAN DAN ORGANISASI",
+      "Struktur Pembagian Satker": "SEKRETARIAT JENDERAL KPU"
+    },
+    {
+      "SATKER": "BIRO SUMBER DAYA MANUSIA",
+      "Struktur Pembagian Satker": "SEKRETARIAT JENDERAL KPU"
+    },
+    {
+      "SATKER": "BIRO TEKNIS PENYELENGGARAAN PEMILU",
+      "Struktur Pembagian Satker": "SEKRETARIAT JENDERAL KPU"
+    },
+    {
+      "SATKER": "BIRO UMUM",
+      "Struktur Pembagian Satker": "SEKRETARIAT JENDERAL KPU"
+    },
+    {
+      "SATKER": "INSPEKTORAT UTAMA",
+      "Struktur Pembagian Satker": "SEKRETARIAT JENDERAL KPU"
+    }
+  ],
+  "total": 1128
+}
