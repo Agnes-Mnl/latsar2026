@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIP Data Checker - Hasil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-50 text-gray-800 font-sans min-h-screen">
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="text-xl font-bold text-indigo-600 tracking-tight">NIP<span
+                            class="text-gray-900">Checker</span></a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="space-y-6">
+            <div class="flex justify-between items-end">
+                <div>
+                    <a href="/" class="text-sm text-gray-500 hover:text-indigo-600 mb-2 flex items-center">← Upload
+                        Ulang</a>
+                    <h2 class="text-2xl font-bold text-gray-900">Hasil Perbandingan Data Pegawai</h2>
+                    <p class="mt-1 text-sm text-gray-500">Perbandingan data antara SIMPEG dan SIASN</p>
+                </div>
+            </div>
+
+            <!-- Dashboard Section -->
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div class="bg-white rounded-lg shadow-sm border p-4 text-center">
+                    <p class="text-2xl font-bold text-indigo-600">{{ stats.simpeg_count }}</p>
+                    <p class="text-xs text-gray-500">Pegawai SIMPEG</p>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm border p-4 text-center">
+                    <p class="text-2xl font-bold text-indigo-600">{{ stats.siasn_count }}</p>
+                    <p class="text-xs text-gray-500">Pegawai SIASN</p>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm border p-4 text-center">
+                    <p class="text-2xl font-bold text-blue-600">{{ stats.common_count }}</p>
+                    <p class="text-xs text-gray-500">Pegawai Sama</p>
+                </div>
+            </div>
+
+            <!-- NIP Differences Section -->
+            {% if only_in_simpeg or only_in_siasn %}
+            <div class="flex justify-between items-center mb-2">
+                <h3 class="text-lg font-semibold text-gray-900">Perbedaan NIP antara Sistem</h3>
+                <a href="/api/export_nip_differences"
+                    class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center gap-2 text-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                    </svg>
+                    Download Excel
+                </a>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- NIPs only in SIMPEG -->
+                <div class="bg-white rounded-lg shadow-sm border">
+                    <div class="bg-red-50 border-b px-4 py-3 rounded-t-lg">
+                        <h3 class="font-semibold text-red-700">Pegawai di Simpeg ({{ only_in_simpeg|length }})
+                        </h3>
+                        <p class="text-xs text-red-600">Tidak ditemukan di SIASN</p>
+                    </div>
+                    <div class="max-h-64 overflow-y-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50 sticky top-0">
+                                <tr>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">NIP</th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Nama
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                                {% for item in only_in_simpeg %}
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-2 text-sm font-mono">{{ item.nip }}</td>
+                                    <td class="px-4 py-2 text-sm">{{ item.nama }}</td>
+                                </tr>
+                                {% endfor %}
+                                {% if not only_in_simpeg %}
+                                <tr>
+                                    <td colspan="2" class="px-4 py-4 text-center text-gray-500 text-sm">Tidak ada</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- NIPs only in SIASN -->
+                <div class="bg-white rounded-lg shadow-sm border">
+                    <div class="bg-amber-50 border-b px-4 py-3 rounded-t-lg">
+                        <h3 class="font-semibold text-amber-700">Pegawai di SIASN ({{ only_in_siasn|length }})
+                        </h3>
+                        <p class="text-xs text-amber-600">Tidak ditemukan di SIMPEG</p>
+                    </div>
+                    <div class="max-h-64 overflow-y-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50 sticky top-0">
+                                <tr>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">NIP</th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Nama
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                                {% for item in only_in_siasn %}
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-4 py-2 text-sm font-mono">{{ item.nip }}</td>
+                                    <td class="px-4 py-2 text-sm">{{ item.nama }}</td>
+                                </tr>
+                                {% endfor %}
+                                {% if not only_in_siasn %}
+                                <tr>
+                                    <td colspan="2" class="px-4 py-4 text-center text-gray-500 text-sm">Tidak ada</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Section Title for Discrepancies -->
+            <div class="flex justify-between items-center pt-4">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900">Inkonsistensi Data Pegawai</h3>
+                    <p class="text-sm text-gray-500">Daftar NIP yang memiliki perbedaan data antara SIMPEG dan SIASN</p>
+                </div>
+            </div>
+
+            <!-- Discrepancy Count Dashboard -->
+            <div class="grid grid-cols-1 gap-4">
+                <div class="bg-white rounded-lg shadow-sm border p-4 text-center">
+                    <p class="text-2xl font-bold text-orange-600">{{ stats.discrepancy_count }}</p>
+                    <p class="text-xs text-gray-500">Inkonsistensi Data Pegawai</p>
+                </div>
+            </div>
+
+            <!-- Search, Filter, and Export -->
+            <div class="bg-white rounded-lg shadow-sm border p-4">
+                <div class="flex gap-4 items-center flex-wrap">
+                    <input type="text" id="search-nip" placeholder="Cari NIP atau Nama..."
+                        class="flex-1 min-w-[200px] px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500">
+                    <select id="filter-column" class="px-4 py-2 border rounded-lg">
+                        <option value="">Semua Kolom</option>
+                        <option value="jenjang_pendidikan">Jenjang Pendidikan ({{ field_counts.get('jenjang_pendidikan',
+                            0) }})</option>
+                        <option value="golru">Golru ({{ field_counts.get('golru', 0) }})</option>
+                        <option value="nama_jabatan">Nama Jabatan ({{ field_counts.get('nama_jabatan', 0) }})</option>
+                        <option value="satker">Satuan Kerja ({{ field_counts.get('satker', 0) }})</option>
+                    </select>
+                    <select id="filter-jenis-pegawai" class="px-4 py-2 border rounded-lg">
+                        <option value="">Semua Jenis Pegawai</option>
+                        <option value="CPNS">CPNS</option>
+                        <option value="PNS">PNS</option>
+                        <option value="PPPK">PPPK</option>
+                    </select>
+                    <div class="flex items-center gap-2">
+                        <select id="export-column" class="px-4 py-2 border rounded-lg bg-white">
+                            <option value="">Export Semua</option>
+                            <option value="jenjang_pendidikan">Hanya Jenjang Pendidikan</option>
+                            <option value="golru">Hanya Golru</option>
+                            <option value="nama_jabatan">Hanya Nama Jabatan</option>
+                            <option value="satker">Hanya Satuan Kerja</option>
+                        </select>
+                        <button onclick="exportData('csv')"
+                            class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            </svg>
+                            Export CSV
+                        </button>
+                        <button onclick="exportData('excel')"
+                            class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            </svg>
+                            Export Excel
+                        </button>
+                    </div>
+                </div>
+                <!-- Filter Stats -->
+                <div id="filter-stats" class="mt-3 text-sm text-gray-600 hidden">
+                    Menampilkan <span id="visible-count" class="font-bold text-indigo-600">0</span> data
+                </div>
+            </div>
+
+            <!-- Pagination Info -->
+            <div class="flex justify-between items-center">
+                <div id="pagination-info" class="text-sm text-gray-600">
+                    Menampilkan <span id="showing-start">1</span>-<span id="showing-end">50</span> dari <span
+                        id="total-rows">{{ discrepancies|length }}</span> data
+                </div>
+                <div id="pagination-controls" class="flex gap-2">
+                    <button onclick="goToPage(currentPage - 1)" id="prev-btn"
+                        class="px-3 py-1 border rounded-lg hover:bg-gray-100 disabled:opacity-50" disabled>←
+                        Sebelumnya</button>
+                    <span id="page-numbers" class="flex gap-1"></span>
+                    <button onclick="goToPage(currentPage + 1)" id="next-btn"
+                        class="px-3 py-1 border rounded-lg hover:bg-gray-100">Selanjutnya →</button>
+                </div>
+            </div>
+
+            <div class="bg-white shadow overflow-hidden rounded-lg border">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase w-1/6">NIP</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase w-1/5">Nama</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Satuan Kerja
+                                SIMPEG</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">PUSAT/PROVINSI
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase w-1/12">Jenis
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Kolom Tidak
+                                Konsisten</th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase w-1/6">Action
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="results-body" class="bg-white divide-y divide-gray-200">
+                        {% if discrepancies %}
+                        {% for item in discrepancies %}
+                        <tr class="hover:bg-gray-50 result-row" data-nip="{{ item.nip }}" data-nama="{{ item.nama }}"
+                            data-cols="{{ item.diff_cols | join(',') }}" data-jenis="{{ item.simpeg.jenis_pegawai }}">
+                            <td class="px-6 py-4 text-sm font-mono">{{ item.nip }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">{{ item.nama }}</td>
+                            <td
+                                class="px-6 py-4 text-sm text-gray-600 {% if 'satker' in item.diff_cols %}bg-orange-50{% endif %}">
+                                {{ item.simpeg.satker_normalized or item.simpeg.satker or '-' }}
+                            </td>
+                            <td class="px-6 py-4 text-sm font-semibold text-indigo-700">
+                                {{ item.simpeg.pusat_provinsi_kategori or '-' }}
+                            </td>
+                            <td class="px-6 py-4 text-sm">
+                                <span class="px-2 py-0.5 rounded text-xs font-medium 
+                                    {% if item.simpeg.jenis_pegawai == 'CPNS' %}bg-blue-100 text-blue-800
+                                    {% elif item.simpeg.jenis_pegawai == 'PPPK' %}bg-purple-100 text-purple-800
+                                    {% else %}bg-green-100 text-green-800{% endif %}">{{ item.simpeg.jenis_pegawai or
+                                    '-' }}</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex flex-wrap gap-1">
+                                    {% for col in item.diff_cols %}
+                                    <span
+                                        class="px-2 py-0.5 rounded text-xs font-medium bg-orange-100 text-orange-800">{{
+                                        field_labels[col] }}</span>
+                                    {% endfor %}
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 text-right text-sm">
+                                <button onclick="showDetail('{{ item.nip }}')"
+                                    class="inline-flex items-center px-3 py-1.5 bg-indigo-600 text-white text-xs font-semibold rounded-lg hover:bg-indigo-700 transition-colors">
+                                    Lihat Detail →
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+                                <p class="text-lg font-medium text-blue-600">✓ Semua data konsisten!</p>
+                            </td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Detail Modal -->
+    <div id="detail-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+        <div class="relative top-20 mx-auto p-5 border w-11/12 max-w-4xl shadow-lg rounded-md bg-white">
+            <div class="mt-3">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-medium text-gray-900" id="modal-title">Detail NIP</h3>
+                    <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div id="modal-content" class="max-h-96 overflow-y-auto">
+                    <!-- Content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const searchInput = document.getElementById('search-nip');
+        const filterSelect = document.getElementById('filter-column');
+        const filterJenisPegawai = document.getElementById('filter-jenis-pegawai');
+        const rows = Array.from(document.querySelectorAll('.result-row'));
+        const filterStats = document.getElementById('filter-stats');
+        const visibleCount = document.getElementById('visible-count');
+
+        // Pagination
+        const ITEMS_PER_PAGE = 50;
+        let currentPage = 1;
+        let filteredRows = [...rows];
+
+        function filterResults() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const columnFilter = filterSelect.value;
+            const jenisFilter = filterJenisPegawai.value;
+
+            filteredRows = rows.filter(row => {
+                const nip = row.dataset.nip.toLowerCase();
+                const nama = row.dataset.nama.toLowerCase();
+                const cols = row.dataset.cols.split(',');
+                const jenis = row.dataset.jenis || '';
+                const matchesSearch = nip.includes(searchTerm) || nama.includes(searchTerm);
+                const matchesColumn = !columnFilter || cols.includes(columnFilter);
+                const matchesJenis = !jenisFilter || jenis === jenisFilter;
+                return matchesSearch && matchesColumn && matchesJenis;
+            });
+
+            // Update filter stats
+            if (searchTerm || columnFilter || jenisFilter) {
+                filterStats.classList.remove('hidden');
+                visibleCount.textContent = filteredRows.length;
+            } else {
+                filterStats.classList.add('hidden');
+            }
+
+            currentPage = 1;
+            updatePagination();
+        }
+
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredRows.length / ITEMS_PER_PAGE);
+            const start = (currentPage - 1) * ITEMS_PER_PAGE;
+            const end = Math.min(start + ITEMS_PER_PAGE, filteredRows.length);
+
+            // Hide all rows first
+            rows.forEach(row => row.style.display = 'none');
+
+            // Show only rows for current page
+            filteredRows.slice(start, end).forEach(row => row.style.display = '');
+
+            // Update pagination info
+            document.getElementById('showing-start').textContent = filteredRows.length > 0 ? start + 1 : 0;
+            document.getElementById('showing-end').textContent = end;
+            document.getElementById('total-rows').textContent = filteredRows.length;
+
+            // Update buttons
+            document.getElementById('prev-btn').disabled = currentPage <= 1;
+            document.getElementById('next-btn').disabled = currentPage >= totalPages;
+
+            // Update page numbers
+            const pageNumbers = document.getElementById('page-numbers');
+            pageNumbers.innerHTML = '';
+            for (let i = 1; i <= Math.min(totalPages, 5); i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i;
+                btn.className = `px-3 py-1 border rounded-lg ${i === currentPage ? 'bg-indigo-600 text-white' : 'hover:bg-gray-100'}`;
+                btn.onclick = () => goToPage(i);
+                pageNumbers.appendChild(btn);
+            }
+            if (totalPages > 5) {
+                const ellipsis = document.createElement('span');
+                ellipsis.textContent = '...';
+                ellipsis.className = 'px-2';
+                pageNumbers.appendChild(ellipsis);
+
+                const lastBtn = document.createElement('button');
+                lastBtn.textContent = totalPages;
+                lastBtn.className = `px-3 py-1 border rounded-lg ${totalPages === currentPage ? 'bg-indigo-600 text-white' : 'hover:bg-gray-100'}`;
+                lastBtn.onclick = () => goToPage(totalPages);
+                pageNumbers.appendChild(lastBtn);
+            }
+        }
+
+        function goToPage(page) {
+            const totalPages = Math.ceil(filteredRows.length / ITEMS_PER_PAGE);
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                updatePagination();
+            }
+        }
+
+        function showDetail(nip) {
+            fetch(`/api/detail/${nip}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert('Error: ' + data.error);
+                        return;
+                    }
+
+                    // Build modal content similar to detail.html
+                    const content = `
+                        <div class="space-y-6">
+                            <div class="flex items-center justify-between">
+                                <div class="text-right">
+                                    <h2 class="text-xl font-bold text-gray-900">NIP: <span class="text-indigo-600 font-mono">${data.nip}</span></h2>
+                                    <p class="text-sm text-gray-600">${data.nama}</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 justify-center">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-4 h-4 bg-red-100 border border-red-300 rounded"></div>
+                                    <span class="text-sm text-gray-600">SIMPEG (Data Lokal)</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <div class="w-4 h-4 bg-green-100 border border-green-300 rounded"></div>
+                                    <span class="text-sm text-gray-600">SIASN (Data Nasional)</span>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-0 border border-gray-300 rounded-lg overflow-hidden bg-white shadow-sm text-sm">
+                                <div class="bg-gray-100 p-3 border-b border-r font-semibold text-center text-red-600">SIMPEG (Data Lokal)</div>
+                                <div class="bg-gray-100 p-3 border-b font-semibold text-center text-green-600">SIASN (Data Nasional)</div>
+                                <div class="border-r bg-white">
+                                    ${['jenjang_pendidikan', 'golru', 'nama_jabatan', 'satker'].map((field, idx) => {
+                        const isDiff = data.diff_cols.includes(field);
+                        const label = { 'jenjang_pendidikan': 'Jenjang Pendidikan', 'golru': 'Golru', 'nama_jabatan': 'Nama Jabatan', 'satker': 'Satuan Kerja' }[field];
+                        return `
+                                            <div class="flex items-stretch border-b ${isDiff ? 'bg-red-100 text-red-900' : 'text-gray-600'}">
+                                                <div class="w-10 text-right pr-3 py-2 text-gray-400 text-xs border-r bg-gray-50 flex items-center justify-end">${idx + 1}</div>
+                                                <div class="flex-1 px-4 py-2">
+                                                    <span class="text-purple-600 font-semibold">${label}:</span>
+                                                    <span class="${isDiff ? 'bg-red-200 px-1 rounded' : ''}">${data.simpeg[field] || '(kosong)'}</span>
+                                                </div>
+                                            </div>
+                                        `;
+                    }).join('')}
+                                </div>
+                                <div class="bg-white">
+                                    ${['jenjang_pendidikan', 'golru', 'nama_jabatan', 'satker'].map((field, idx) => {
+                        const isDiff = data.diff_cols.includes(field);
+                        const label = { 'jenjang_pendidikan': 'Jenjang Pendidikan', 'golru': 'Golru', 'nama_jabatan': 'Nama Jabatan', 'satker': 'Satuan Kerja' }[field];
+                        return `
+                                            <div class="flex items-stretch border-b ${isDiff ? 'bg-green-100 text-green-900' : 'text-gray-600'}">
+                                                <div class="w-10 text-right pr-3 py-2 text-gray-400 text-xs border-r bg-gray-50 flex items-center justify-end">${idx + 1}</div>
+                                                <div class="flex-1 px-4 py-2">
+                                                    <span class="text-purple-600 font-semibold">${label}:</span>
+                                                    <span class="${isDiff ? 'bg-green-200 px-1 rounded' : ''}">${data.siasn[field] || '(kosong)'}</span>
+                                                </div>
+                                            </div>
+                                        `;
+                    }).join('')}
+                                </div>
+                            </div>
+                            <div class="bg-white rounded-lg shadow-sm border p-6">
+                                <h3 class="font-semibold text-gray-900 mb-4">Ringkasan Perbedaan</h3>
+                                <div class="space-y-3">
+                                    ${data.diff_cols.map(field => {
+                        const label = { 'jenjang_pendidikan': 'Jenjang Pendidikan', 'golru': 'Golru', 'nama_jabatan': 'Nama Jabatan', 'satker': 'Satuan Kerja' }[field];
+                        return `
+                                            <div class="flex items-start gap-4 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                                                <span class="px-2 py-0.5 rounded text-xs font-medium bg-yellow-200 text-yellow-800">${label}</span>
+                                                <div class="flex-1 grid grid-cols-2 gap-4 text-sm">
+                                                    <div><span class="text-red-600 font-medium">SIMPEG:</span> ${data.simpeg[field] || '(kosong)'}</div>
+                                                    <div><span class="text-green-600 font-medium">SIASN:</span> ${data.siasn[field] || '(kosong)'}</div>
+                                                </div>
+                                            </div>
+                                        `;
+                    }).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    document.getElementById('modal-title').textContent = `Detail NIP: ${data.nip}`;
+                    document.getElementById('modal-content').innerHTML = content;
+                    document.getElementById('detail-modal').classList.remove('hidden');
+                })
+                .catch(error => {
+                    console.error('Error loading detail:', error);
+                    alert('Error loading detail');
+                });
+        }
+
+        function closeModal() {
+            document.getElementById('detail-modal').classList.add('hidden');
+        }
+
+        searchInput.addEventListener('input', filterResults);
+        filterSelect.addEventListener('change', filterResults);
+        filterJenisPegawai.addEventListener('change', filterResults);
+
+        // Initialize pagination
+        updatePagination();
+
+        // Export functionality
+        function exportData(format) {
+            const exportColumn = document.getElementById('export-column').value;
+            let url = '/api/export?format=' + format;
+            if (exportColumn) {
+                url += '&column=' + exportColumn;
+            }
+            window.location.href = url;
+        }
+    </script>
+</body>
+
+</html>
