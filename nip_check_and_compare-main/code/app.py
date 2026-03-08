@@ -1363,6 +1363,8 @@ def compare_datasets(simpeg_data, siasn_data):
     logger.info(f"  Found {len(only_in_simpeg)} NIPs only in SIMPEG")
     logger.info(f"  Found {len(only_in_siasn)} NIPs only in SIASN")
     
+    split_discrepancies = []
+    
     for nip in common_nips:
         simpeg_row = simpeg_data[nip]
         siasn_row = siasn_data[nip]
@@ -1391,13 +1393,16 @@ def compare_datasets(simpeg_data, siasn_data):
                     field_counts[field] += 1
         
         if diff_cols:
-            discrepancies.append({
-                'nip': nip,
-                'nama': simpeg_row['nama'] or siasn_row['nama'],
-                'diff_cols': diff_cols,
-                'simpeg': simpeg_row,
-                'siasn': siasn_row
-            })
+            # Add to split_discrepancies: one entry per column difference
+            for col in diff_cols:
+                split_discrepancies.append({
+                    'nip': nip,
+                    'nama': simpeg_row['nama'] or siasn_row['nama'],
+                    'diff_cols': [col], # Single column for this row
+                    'all_diff_cols': diff_cols, # All columns for this NIP (useful for UI)
+                    'simpeg': simpeg_row,
+                    'siasn': siasn_row
+                })
     
     # Prepare NIP difference lists
     only_simpeg_list = [
@@ -1409,11 +1414,11 @@ def compare_datasets(simpeg_data, siasn_data):
         for nip in sorted(only_in_siasn)
     ]
     
-    discrepancies.sort(key=lambda x: x['nip'])
-    logger.info(f"  ✓ Found {len(discrepancies)} discrepancies")
+    split_discrepancies.sort(key=lambda x: x['nip'])
+    logger.info(f"  ✓ Found {len(split_discrepancies)} split discrepancies from {len(set(d['nip'] for d in split_discrepancies))} unique NIPs")
     logger.info(f"  Field counts: {field_counts}")
     
-    return discrepancies, len(common_nips), only_simpeg_list, only_siasn_list, field_counts
+    return split_discrepancies, len(common_nips), only_simpeg_list, only_siasn_list, field_counts
 
 
 @app.route('/')
@@ -1474,7 +1479,20 @@ def upload_files():
             
             # Store in server-side storage (not session - cookies have size limits)
             DATA_STORE['discrepancies'] = discrepancies
-            DATA_STORE['discrepancies_dict'] = {d['nip']: d for d in discrepancies}
+            # Create a dict of ALL discrepancies for each NIP for the Detail view
+            nip_to_full_discrepancy = {}
+            for d in discrepancies:
+                nip = d['nip']
+                if nip not in nip_to_full_discrepancy:
+                    nip_to_full_discrepancy[nip] = {
+                        'nip': nip,
+                        'nama': d['nama'],
+                        'diff_cols': d.get('all_diff_cols', d['diff_cols']),
+                        'simpeg': d['simpeg'],
+                        'siasn': d['siasn']
+                    }
+            
+            DATA_STORE['discrepancies_dict'] = nip_to_full_discrepancy
             DATA_STORE['only_in_simpeg'] = only_simpeg
             DATA_STORE['only_in_siasn'] = only_siasn
             DATA_STORE['field_counts'] = field_counts
@@ -1482,7 +1500,7 @@ def upload_files():
                 'simpeg_count': len(simpeg_merged),
                 'siasn_count': len(siasn_merged),
                 'common_count': total_common,
-                'discrepancy_count': len(discrepancies),
+                'discrepancy_count': len(nip_to_full_discrepancy), # Unique NIP count
                 'only_simpeg_count': len(only_simpeg),
                 'only_siasn_count': len(only_siasn),
                 'field_counts': field_counts
@@ -1603,7 +1621,21 @@ def api_test_load():
         
         # Store
         DATA_STORE['discrepancies'] = discrepancies
-        DATA_STORE['discrepancies_dict'] = {d['nip']: d for d in discrepancies}
+        
+        # Create a dict of ALL discrepancies for each NIP for the Detail view
+        nip_to_full_discrepancy = {}
+        for d in discrepancies:
+            nip = d['nip']
+            if nip not in nip_to_full_discrepancy:
+                nip_to_full_discrepancy[nip] = {
+                    'nip': nip,
+                    'nama': d['nama'],
+                    'diff_cols': d.get('all_diff_cols', d['diff_cols']),
+                    'simpeg': d['simpeg'],
+                    'siasn': d['siasn']
+                }
+        
+        DATA_STORE['discrepancies_dict'] = nip_to_full_discrepancy
         DATA_STORE['only_in_simpeg'] = only_simpeg
         DATA_STORE['only_in_siasn'] = only_siasn
         DATA_STORE['field_counts'] = field_counts
@@ -1611,7 +1643,7 @@ def api_test_load():
             'simpeg_count': len(simpeg_merged),
             'siasn_count': len(siasn_merged),
             'common_count': total_common,
-            'discrepancy_count': len(discrepancies),
+            'discrepancy_count': len(nip_to_full_discrepancy), # Unique NIP count
             'only_simpeg_count': len(only_simpeg),
             'only_siasn_count': len(only_siasn),
             'field_counts': field_counts
