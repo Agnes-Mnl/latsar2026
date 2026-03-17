@@ -9,11 +9,15 @@ A. Bagi Sub Bagian Pengelolaan Data (PUSAT - Biro SDM)
 3. Install python di PC/Komputer yang digunakan melalui https://www.python.org/downloads/ 
 4. Lakukan instalasi mini sistem di visual studio code dengan cara masuk ke terminal di visual studio code dan ketik berikut :
    a. cd code
+
    b. python -m venv .venv
+
    c. .venv\Scripts\activate
+
    d. pip install -r requirements.txt
+
    e. python app.py
-5. Lalu klik Link yang dihasilkan : http://127.0.0.1:5000 . Link ini dapat diakses secara lokal saja
+6. Lalu klik Link yang dihasilkan : http://127.0.0.1:5000 . Link ini dapat diakses secara lokal saja
    <img width="1908" height="918" alt="image" src="https://github.com/user-attachments/assets/f59720e7-bf99-471b-b93d-1b24935f64c0" />
 
 
