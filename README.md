@@ -30,3 +30,7 @@ II. Penggunaan menggunakan wifi yang sama
 3. Pengguna dapat menggunakan mini sistem
    <img width="1901" height="914" alt="image" src="https://github.com/user-attachments/assets/26847dc9-be7b-4079-a681-e1e619af3a75" />
 
+
+B. Dahboard Monitoring
+
+
