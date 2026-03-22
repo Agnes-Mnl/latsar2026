@@ -40,7 +40,7 @@ Berikut langkah-langkah instalasi Mini Sistem
    a. Upload file excel untuk data SIMPEG dan Upload file CSV untuk data SIASN
   <img width="1903" height="921" alt="image" src="https://github.com/user-attachments/assets/fb27882a-364d-44bc-9c47-b521972f37fa" />
 
-  **8. Hasil Output**
+**8. Hasil Output**
   - Sistem akan menampilkan hasil perbandingan data
   - Hasil tersebut juga dapat diunduh dalam bentuk file excel
     <img width="1883" height="935" alt="image" src="https://github.com/user-attachments/assets/85e32423-1ef9-4086-9e00-fd44b65d5c7c" />
