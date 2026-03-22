@@ -5,6 +5,7 @@
 I. Instalasi Mini Sistem di PC/Komputer
 
 Berikut langkah-langkah instalasi Mini Sistem
+
 **1. Unduh Source Code**
 - Download folder Mini Sistem dalam format .zip melalui Github : _https://github.com/Agnes-Mnl/latsar2026_ 
 <img width="1895" height="877" alt="image" src="https://github.com/user-attachments/assets/67ce1804-d5e5-422c-8d88-0317f34a6083" />
@@ -46,6 +47,7 @@ Berikut langkah-langkah instalasi Mini Sistem
 
 
 **💻B. DASHBOARD MONITORING**
+
 Dashboard monitoring akan dikelola oleh Sub Bagian Pengelolaan Data dan dapat diakses oleh Operator di Satuan Kerja.
 
 **Pegawai di Sub Bagian Pengelolaan Data Pegawai**
@@ -67,13 +69,13 @@ Dashboard monitoring akan dikelola oleh Sub Bagian Pengelolaan Data dan dapat di
 
 **Operator SIMPEG dan SIASN**
 
-1. Akses Dashboard Online
+**1. Akses Dashboard Online**
 - Buka Link Berikut : https://docs.google.com/spreadsheets/d/1ykaF5QE5HAhVb7GVTYdBmCZa3rghxwDgBCfpR6KL66Q/edit?usp=sharing
 
-2. Analisis Data
+**2. Analisis Data**
 - Operator dapat elihat perbedaan data antara SIMPEG dan SIASN
 
-3. fIlter berdasarkan Provinsi
+**3. filter berdasarkan Provinsi**
 - Pilih Provinsi sesuai satuan kerja masing-masing
 - Data akan otomatis menyesaikan 
 <img width="572" height="116" alt="image" src="https://github.com/user-attachments/assets/2115d121-fab0-4509-82c0-a0b9602fe14c" />
