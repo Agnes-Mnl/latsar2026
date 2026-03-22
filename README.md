@@ -1,7 +1,9 @@
 **TUTORIAL PENGGUNAAN MINI SISTEM & DASHBOARD MONITORING**
 
 **💻A. MINI SISTEM**
+
 I. Instalasi Mini Sistem di PC/Komputer
+
 Berikut langkah-langkah instalasi Mini Sistem
 **1. Unduh Source Code**
 - Download folder Mini Sistem dalam format .zip melalui Github : _https://github.com/Agnes-Mnl/latsar2026_ 
@@ -32,7 +34,7 @@ Berikut langkah-langkah instalasi Mini Sistem
 - Mini Sistem juga dapat digunakan bersama dalam satu jaringan yang sama. Operator yang melakukan instalasi mini sistem dapat membagikan link lokal berikut : http://127.0.0.1:5000 kepada pengguna yang ingin menggunakan mini sistem.
 - Pengguna lain tidak perlu instalasi dan hanya perlu mengakses link http://127.0.0.1:5000 saja
 
-  **7. Input Data**
+**7. Input Data**
 - Upload data dengan cara :
    a. Upload file excel untuk data SIMPEG dan Upload file CSV untuk data SIASN
   <img width="1903" height="921" alt="image" src="https://github.com/user-attachments/assets/fb27882a-364d-44bc-9c47-b521972f37fa" />
