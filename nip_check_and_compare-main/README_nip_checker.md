@@ -28,7 +28,7 @@ Aplikasi web untuk membandingkan data pegawai antara **SIMPEG** (Sistem Informas
 cd code
 
 # Buat virtual environment
-python -m venv .venv
+python -m venv .
 
 # Aktifkan virtual environment
 .venv\Scripts\activate
@@ -50,7 +50,7 @@ cd code
 pip install -r requirements.txt
 
 # Jalankan aplikasi
-python app.py
+pythvenvon app.py
 ```
 
 ---
