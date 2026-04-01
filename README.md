@@ -43,7 +43,7 @@ Berikut langkah-langkah instalasi Mini Sistem
 **8. Hasil Output**
   - Sistem akan menampilkan hasil perbandingan data
   - Hasil tersebut juga dapat diunduh dalam bentuk file excel
-    <img width="1883" height="935" alt="image" src="https://github.com/user-attachments/assets/85e32423-1ef9-4086-9e00-fd44b65d5c7c" />
+    <img width="1912" height="885" alt="image" src="https://github.com/user-attachments/assets/4499f101-4e6b-45f3-8cfb-4dde7198bed3" />
 
 
 **💻B. DASHBOARD MONITORING**
@@ -52,16 +52,15 @@ Dashboard monitoring akan dikelola oleh Sub Bagian Pengelolaan Data dan dapat di
 
 **Pegawai di Sub Bagian Pengelolaan Data Pegawai**
 
-**1. Buka File Hasil**
-- Gunakan file Excel hasil unduhan dari Mini Sistem
-<img width="1911" height="435" alt="image" src="https://github.com/user-attachments/assets/07378896-d594-4c55-89b2-ac9a79a5aa42" />
+**1. Tekan tombol "Kirim ke Spreadsheet" yang ada pada Mini Sistem**
+- Pada Mini Sistem terdapat tombol yang dapat mengirimkan perbedaan data yang dihasilkan oleh mini sistem tersebut ke spreadsheet
+<img width="1377" height="600" alt="image" src="https://github.com/user-attachments/assets/dd2230e9-ffd2-4eef-a343-ea079b1c7113" />
 
-**2. Input ke Dashboard**
-- Copy seluruh isi data dari file tersebut
-- Paste ke Sheet "Data" pada Dashboard Monitoring
-<img width="1915" height="827" alt="image" src="https://github.com/user-attachments/assets/637920fd-ba42-457e-bf35-92436b0edfcb" />
+- Data akan secara otomatis masuk ke halaman Spreadsheet
+<img width="1907" height="853" alt="image" src="https://github.com/user-attachments/assets/407fcced-2ae8-44b9-a6e0-22ea5e70f501" />
 
-**3. Lihat Hasil Rekap**
+
+**2. Lihat Hasil Rekap**
 - Dashboard akan otomatis ter-update pada sheet "REKAPDATA"
 <img width="1902" height="780" alt="image" src="https://github.com/user-attachments/assets/2f425f0d-0fb5-4512-ba88-e9fcb03adfc5" />
 
